@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哈基米说</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#10B981',
+                        dark: '#1E293B',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .transition-height {
+                transition: max-height 0.3s ease-in-out;
+            }
+            .card-shadow {
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-light to-slate-200 min-h-screen font-sans text-dark">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- 页面标题 -->
+        <header class="text-center mb-12">
+            <h1 class="text-[clamp(2rem,5vw,3rem)] font-bold text-primary mb-3 tracking-tight">
+                哈基米说
+            </h1>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="grid md:grid-cols-2 gap-8">
+            <!-- 编码区域 -->
+            <section class="bg-white rounded-xl p-6 card-shadow transform hover:scale-[1.01] transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                        <i class="fa fa-lock text-primary text-xl"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold">说哈基米话</h2>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="encode-input" class="block text-sm font-medium text-slate-700 mb-1">我来喵两句~：</label>
+                    <textarea 
+                        id="encode-input" 
+                        class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none"
+                        rows="5"
+                        placeholder="在这里输入要编码的文本..."></textarea>
+                </div>
+                
+                <button 
+                    id="encode-btn" 
+                    class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2">
+                    <i class="fa fa-arrow-right"></i>
+                    <span>翻译</span>
+                </button>
+                
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">编码结果：</label>
+                    <div class="relative">
+                        <textarea 
+                            id="encode-output" 
+                            class="w-full p-3 border border-slate-300 rounded-lg bg-slate-50 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none"
+                            rows="5"
+                            readonly
+                            placeholder="编码结果将显示在这里..."></textarea>
+                        <button 
+                            id="copy-encode" 
+                            class="absolute right-2 bottom-2 text-slate-500 hover:text-primary transition-colors">
+                            <i class="fa fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 解码区域 -->
+            <section class="bg-white rounded-xl p-6 card-shadow transform hover:scale-[1.01] transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center mr-3">
+                        <i class="fa fa-unlock text-secondary text-xl"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold">听哈基米说</h2>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="decode-input" class="block text-sm font-medium text-slate-700 mb-1">输入要翻译的哈基米语：</label>
+                    <textarea 
+                        id="decode-input" 
+                        class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all resize-none"
+                        rows="5"
+                        placeholder="在这里输入要解码的字符串..."></textarea>
+                </div>
+                
+                <button 
+                    id="decode-btn" 
+                    class="w-full bg-secondary hover:bg-secondary/90 text-white font-medium py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2">
+                    <i class="fa fa-arrow-left"></i>
+                    <span>翻译</span>
+                </button>
+                
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">翻译结果：</label>
+                    <div class="relative">
+                        <textarea 
+                            id="decode-output" 
+                            class="w-full p-3 border border-slate-300 rounded-lg bg-slate-50 focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all resize-none"
+                            rows="5"
+                            readonly
+                            placeholder="解码结果将显示在这里..."></textarea>
+                        <button 
+                            id="copy-decode" 
+                            class="absolute right-2 bottom-2 text-slate-500 hover:text-secondary transition-colors">
+                            <i class="fa fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 状态提示 -->
+        <div id="status-toast" class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2">
+            <i id="status-icon" class="fa"></i>
+            <span id="status-message"></span>
+        </div>
+    </div>
+
+    <script>
+        // 自定义Base16字符集，对应0-15
+        const CUSTOM_CHARS = [
+            "哈基", "哈米", "哈基米", "阿西嘎", 
+            "南北绿豆", "哈呀库", "叮咚", "小白手套", 
+            "胖宝宝", "曼波", "大狗叫", "哦嘛叽哩", 
+            "一段一段", "搞核算", "哈牛魔", "阿米诺斯"
+        ];
+        
+        // 创建字符到索引的映射，用于解码
+        const CHAR_TO_INDEX = {};
+        CUSTOM_CHARS.forEach((char, idx) => {
+            CHAR_TO_INDEX[char] = idx;
+        });
+        
+        // 编码函数 - 支持所有Unicode字符（包括中文）
+        function encode(plaintext) {
+            let encoded = [];
+            for (let i = 0; i < plaintext.length; i++) {
+                const char = plaintext[i];
+                // 获取字符的Unicode编码点
+                const codePoint = char.codePointAt(0);
+                
+                // 将Unicode编码点转换为UTF-8字节
+                const utf8Bytes = [];
+                if (codePoint < 0x80) {
+                    // 单字节
+                    utf8Bytes.push(codePoint);
+                } else if (codePoint < 0x800) {
+                    // 双字节
+                    utf8Bytes.push(0xC0 | (codePoint >> 6));
+                    utf8Bytes.push(0x80 | (codePoint & 0x3F));
+                } else if (codePoint < 0x10000) {
+                    // 三字节
+                    utf8Bytes.push(0xE0 | (codePoint >> 12));
+                    utf8Bytes.push(0x80 | ((codePoint >> 6) & 0x3F));
+                    utf8Bytes.push(0x80 | (codePoint & 0x3F));
+                } else {
+                    // 四字节 (UTF-16扩展平面)
+                    utf8Bytes.push(0xF0 | (codePoint >> 18));
+                    utf8Bytes.push(0x80 | ((codePoint >> 12) & 0x3F));
+                    utf8Bytes.push(0x80 | ((codePoint >> 6) & 0x3F));
+                    utf8Bytes.push(0x80 | (codePoint & 0x3F));
+                }
+                
+                // 每个字节拆分为高4位和低4位，用自定义字符表示
+                utf8Bytes.forEach(byte => {
+                    const highNibble = (byte >> 4) & 0x0F;
+                    const lowNibble = byte & 0x0F;
+                    encoded.push(CUSTOM_CHARS[highNibble]);
+                    encoded.push(CUSTOM_CHARS[lowNibble]);
+                });
+            }
+            return encoded.join('');
+        }
+        
+        // 解码函数 - 支持所有Unicode字符（包括中文）
+        function decode(encodedStr) {
+            // 解析编码字符串为自定义字符列表
+            const encodedChars = [];
+            let i = 0;
+            
+            while (i < encodedStr.length) {
+                let matched = false;
+                // 从最长的字符开始尝试匹配
+                const sortedChars = Object.keys(CHAR_TO_INDEX).sort((a, b) => b.length - a.length);
+                
+                for (const char of sortedChars) {
+                    if (encodedStr.startsWith(char, i)) {
+                        encodedChars.push(char);
+                        i += char.length;
+                        matched = true;
+                        break;
+                    }
+                }
+                
+                if (!matched) {
+                    throw new Error(`在位置 ${i} 发现无效的编码字符`);
+                }
+            }
+            
+            // 检查字符数量是否为偶数（每个字节由两个字符表示）
+            if (encodedChars.length % 2 !== 0) {
+                throw new Error("编码字符串包含的字符数量必须为偶数");
+            }
+            
+            // 将自定义字符转换为字节
+            const bytes = [];
+            for (let i = 0; i < encodedChars.length; i += 2) {
+                const highChar = encodedChars[i];
+                const lowChar = encodedChars[i + 1];
+                
+                // 检查字符是否有效
+                if (!CHAR_TO_INDEX.hasOwnProperty(highChar) || !CHAR_TO_INDEX.hasOwnProperty(lowChar)) {
+                    throw new Error(`包含无效的编码字符: ${highChar} 或 ${lowChar}`);
+                }
+                
+                const highNibble = CHAR_TO_INDEX[highChar];
+                const lowNibble = CHAR_TO_INDEX[lowChar];
+                
+                // 组合成一个字节
+                const byte = (highNibble << 4) | lowNibble;
+                bytes.push(byte);
+            }
+            
+            // 将UTF-8字节数组转换为字符串
+            let result = '';
+            i = 0;
+            while (i < bytes.length) {
+                const byte = bytes[i];
+                
+                if (byte < 0x80) {
+                    // 单字节字符
+                    result += String.fromCodePoint(byte);
+                    i++;
+                } else if (byte >= 0xC0 && byte < 0xE0) {
+                    // 双字节字符
+                    if (i + 1 >= bytes.length) throw new Error("不完整的双字节序列");
+                    const byte2 = bytes[i + 1];
+                    if ((byte2 & 0xC0) !== 0x80) throw new Error("无效的双字节序列");
+                    
+                    const codePoint = ((byte & 0x1F) << 6) | (byte2 & 0x3F);
+                    result += String.fromCodePoint(codePoint);
+                    i += 2;
+                } else if (byte >= 0xE0 && byte < 0xF0) {
+                    // 三字节字符（大部分中文字符属于此类）
+                    if (i + 2 >= bytes.length) throw new Error("不完整的三字节序列");
+                    const byte2 = bytes[i + 1];
+                    const byte3 = bytes[i + 2];
+                    if ((byte2 & 0xC0) !== 0x80 || (byte3 & 0xC0) !== 0x80) throw new Error("无效的三字节序列");
+                    
+                    const codePoint = ((byte & 0x0F) << 12) | ((byte2 & 0x3F) << 6) | (byte3 & 0x3F);
+                    result += String.fromCodePoint(codePoint);
+                    i += 3;
+                } else if (byte >= 0xF0 && byte < 0xF8) {
+                    // 四字节字符
+                    if (i + 3 >= bytes.length) throw new Error("不完整的四字节序列");
+                    const byte2 = bytes[i + 1];
+                    const byte3 = bytes[i + 2];
+                    const byte4 = bytes[i + 3];
+                    if ((byte2 & 0xC0) !== 0x80 || (byte3 & 0xC0) !== 0x80 || (byte4 & 0xC0) !== 0x80) 
+                        throw new Error("无效的四字节序列");
+                    
+                    const codePoint = ((byte & 0x07) << 18) | ((byte2 & 0x3F) << 12) | 
+                                     ((byte3 & 0x3F) << 6) | (byte4 & 0x3F);
+                    result += String.fromCodePoint(codePoint);
+                    i += 4;
+                } else {
+                    throw new Error(`无效的UTF-8起始字节: 0x${byte.toString(16)}`);
+                }
+            }
+            
+            return result;
+        }
+        
+        // 显示状态提示
+        function showStatus(message, isSuccess = true) {
+            const toast = document.getElementById('status-toast');
+            const icon = document.getElementById('status-icon');
+            const messageEl = document.getElementById('status-message');
+            
+            messageEl.textContent = message;
+            icon.className = `fa ${isSuccess ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500'}`;
+            toast.className = `fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg transform translate-y-0 opacity-100 transition-all duration-300 flex items-center gap-2 ${isSuccess ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`;
+            
+            setTimeout(() => {
+                toast.className = 'fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2';
+            }, 3000);
+        }
+        
+        // 编码按钮事件
+        document.getElementById('encode-btn').addEventListener('click', () => {
+            const input = document.getElementById('encode-input').value;
+            try {
+                const result = encode(input);
+                document.getElementById('encode-output').value = result;
+                showStatus('翻译成功！');
+            } catch (error) {
+                showStatus(`翻译失败: ${error.message}`, false);
+            }
+        });
+        
+        // 解码按钮事件
+        document.getElementById('decode-btn').addEventListener('click', () => {
+            const input = document.getElementById('decode-input').value;
+            try {
+                const result = decode(input);
+                document.getElementById('decode-output').value = result;
+                showStatus('翻译成功！');
+            } catch (error) {
+                showStatus(`翻译失败: ${error.message}`, false);
+            }
+        });
+        
+        // 复制编码结果
+        document.getElementById('copy-encode').addEventListener('click', () => {
+            const output = document.getElementById('encode-output');
+            output.select();
+            document.execCommand('copy');
+            showStatus('哈基米语已复制到剪贴板');
+        });
+        
+        // 复制解码结果
+        document.getElementById('copy-decode').addEventListener('click', () => {
+            const output = document.getElementById('decode-output');
+            output.select();
+            document.execCommand('copy');
+            showStatus('翻译结果已复制到剪贴板');
+        });
+        
+        // 自动编码/解码（带防抖）
+        document.getElementById('encode-input').addEventListener('input', debounce(() => {
+            const input = document.getElementById('encode-input').value;
+            try {
+                const result = encode(input);
+                document.getElementById('encode-output').value = result;
+            } catch (error) {
+                // 输入过程中不显示错误
+            }
+        }, 300));
+        
+        document.getElementById('decode-input').addEventListener('input', debounce(() => {
+            const input = document.getElementById('decode-input').value;
+            try {
+                const result = decode(input);
+                document.getElementById('decode-output').value = result;
+            } catch (error) {
+                // 输入过程中不显示错误
+            }
+        }, 300));
+        
+        // 防抖函数
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+    </script>
+</body>
+</html>
+    
